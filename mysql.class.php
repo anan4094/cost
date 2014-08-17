@@ -1,6 +1,6 @@
 <?php
 /**
-* 
+*
 */
 class Mysql{
 	var $mysql_server_name;
@@ -9,7 +9,7 @@ class Mysql{
 	var $mysql_database;
 	var $conn;
 	function Mysql(){
-		$this->mysql_server_name='localhost';
+		$this->mysql_server_name='192.168.1.103';
 		$this->mysql_username='root';
 		$this->mysql_password='550533221';
 		$this->mysql_database='cost';

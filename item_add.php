@@ -1,18 +1,19 @@
 <?php
-require_once("mysql.class.php");
-$db = new Mysql();
-$db->open();
+require_once("db/db.php");
+
+error_log('test');
+error_log("You messed up!", 3, "/var/log/php_errors.log");
 ?>
 <!DOCTYPE HTML><head>
 	<meta charset="UTF-8">
-    <title>消费条目添加</title>
+    <title>消费条目</title>
 </head>
 <html>
 
-<link href="../Public/js/chosen/chosen.css" type="text/css" rel="stylesheet" />
+<link href="lib/js/chosen/chosen.css" type="text/css" rel="stylesheet" />
 <link href="base.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="../Public/js/jquery-1.5.2.min.js"></script>
-<script type="text/javascript" src="../Public/js/chosen/chosen.jquery.js"></script>
+<script type="text/javascript" src="lib/js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="lib/js/chosen/chosen.jquery.js"></script>
 <script type="text/javascript" src="base.js"></script>
 <script type="text/javascript">
 $(function(){
@@ -90,7 +91,7 @@ $(function(){
             url:'item_action.php'
             ,data:data
             ,success:function(e){
-                alert('');
+                alert(JSON.stringify(e));
             }
         })
     });
@@ -141,7 +142,7 @@ $(function(){
              </div>
         </div>
     </div>
-    
+
     <div class="order_container">
     	<div class="order_content">
         	<div class="order_desc">条目描述</div>
@@ -171,8 +172,8 @@ $(function(){
             <div class="order_fund">
                 <select class='chosen'>
                 <?php
-                $result = $db->query("select * from fund");
-                while($row = mysql_fetch_array($result)) {
+                $result = getDB()->GetAll("select * from fund");
+                foreach($result as $row) {
                     $name = $row['fund_name'];
                     $id= $row['id'];
                     echo '<option value="'.$id.'">'.$name.'</option>';
@@ -198,9 +199,9 @@ $(function(){
     </div>
 
     <?php
-    $result = $db->query("select aa.*,bb.description as order_desc,bb.spend as order_spend,cc.type_name,dd.fund_name from items aa left join orders bb on aa.order_id = bb.id left join type cc on aa.type_id = cc.id left join fund dd on bb.fund_id = dd.id order by order_id");
+    $result = getDB()->GetAll("select aa.*,bb.description as order_desc,bb.spend as order_spend,cc.type_name,dd.fund_name from items aa left join orders bb on aa.order_id = bb.id left join type cc on aa.type_id = cc.id left join fund dd on bb.fund_id = dd.id order by order_id");
     $order_id = 0;
-    while ($row = mysql_fetch_array($result)) {
+    foreach ($result as $row) {
     	$cur_order_id=$row['order_id'];
     	if($cur_order_id!=$order_id){
     		if($order_id!=0){
@@ -214,7 +215,7 @@ $(function(){
             echo '<div class="order_fund">'.$row['fund_name'].'</div>';
             echo '<div class="order_time">'.$row['time'].'</div>';
             echo '</div>';
-    		
+
     		echo '<div class="items_container">';
             echo '<div class="item_container">';
             echo '<div class="item_desc">['.$row['type_name'].']'.$row['description'].'</div>';
@@ -227,7 +228,6 @@ $(function(){
             echo '</div>';
     	}
     }
-    $db->close();
     ?>
     </div>
 

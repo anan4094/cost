@@ -1,7 +1,7 @@
 $._select = {
 	init:function(el,op){
 		var sel=$("<select/>");
-		sel.append("<option value=''>[无]</option>");
+		sel.append("<option value=''>[\u65E0]</option>");
 		var container=$("<div/>").addClass('selected');
 		el = $(el);
 		el.append(sel);
@@ -36,7 +36,7 @@ $._select = {
 			}else{
 				C();
 			}
-			
+
 		}
 		function C(){
 			var data=$._select.data;
@@ -55,7 +55,7 @@ $._select = {
 			}
 			if (!data) {data=[];};
 			sel.html('');
-			var opt=$('<option/>').html('[无]').attr({value:'0'});
+			var opt=$('<option/>').html('[\u65E0]').attr({value:'0'});
 			if(curID.length>0){
 				sel.data('value',curID[curID.length-1]);
 			}else{
