@@ -1,13 +1,13 @@
 <?php
 
 
-define("DB_HOST", '192.168.1.103');
+define("DB_HOST", '127.0.0.1');//192.168.1.103');
 define("DB_USER", 'root');
-define("DB_PASS", '550533221');
+define("DB_PASS", '');//550533221');
 define("DB_DBNAME", 'cost');
 
 define('MEM_PDO_TIME', 7200 );
-define('ERROR_SQL_FILE','/Users/anan/Documents/sql_err.log');
+define('ERROR_SQL_FILE','/var/log/sql_err.log');
 
 
 require_once 'pdo.php';

@@ -1,8 +1,6 @@
 <?php
 require_once("db/db.php");
-
-error_log('test');
-error_log("You messed up!", 3, "/var/log/php_errors.log");
+date_default_timezone_set('PRC');
 ?>
 <!DOCTYPE HTML><head>
 	<meta charset="UTF-8">
@@ -31,15 +29,38 @@ $(function(){
         value = value.replace(/^\s*/gi,'').replace(/\s*$/gi,'');
         return value;
     }
+    function del_item(){
+        var _this = $(this);
+        window._this=_this;
+        var item = _this.parents('.item_container');
+        if(_this.parents('.items_container').find('.item_container').not('.hidden').length==1){
+            alert('至少保留一条条目');
+            return;
+        };
+        item.addClass('hidden').slideUp(400,function(){
+            item.detach();
+        });
+    }
+    function init_item(item){
+        item.find('.type_content').typeSelect();
+        item.find('.item_del').click(del_item);
+    }
+    $('.item_container').each(function(){
+        init_item($(this));
+    })
 	$('#add_item').click(function(){
         var items_container = $('.order_form .items_container');
         var item = $('<div class="item_container">'+
             ' <div class="item_desc small"><input placeholder="物品具体名称"/></div>'+
             ' <div class="item_spend"><input placeholder="金额"/></div>'+
             ' <div class="item_type"><div class="type_content"></div></div>'+
+            ' <div class="right">'+
+            ' <button class="btn item_del">删除</button>'+
+            ' </div>'+
             '</div>');
         items_container.append(item);
-        item.find('.type_content').typeSelect();
+        init_item(item);
+
     });
     $('#add_order').click(function(){
         var data={};
@@ -97,71 +118,12 @@ $(function(){
     });
 })
 </script>
+<style type="text/css">
+    a.page{
+        margin: 0 20px 15px 0;
+    }
+</style>
 <body>
-
-
-<!-- <div class="orders_container">
-    <div class="order_container">
-        <div class="order_content">
-            <div class="order_desc">
-                <input placeholder='消费说明(地点、事件、物品等)'/>
-            </div>
-            <div class="order_fund">
-                <select class='chosen'>
-                    <option>[无]</option>
-                </select>
-            </div>
-            <div class="order_time">
-                <input value='2014-4-08-11'/>
-            </div>
-        </div>
-        <div class="items_container">
-            <div class="item_container">
-                <div class="item_desc small"><input placeholder='物品具体名称'/></div>
-                <div class="item_spend"><input placeholder='金额'/></div>
-                <div class="item_type"><div class="type_content"></div></div>
-             </div>
-        </div>
-    </div>
-
-	<div class="order_container">
-    	<div class="order_content">
-        	<div class="order_desc">条目描述</div>
-            <div class="order_spend">90.01</div>
-            <div class="order_fund">现金</div>
-            <div class="order_time">2014-4-08-11</div>
-        </div>
-        <div class="items_container">
-        	<div class="item_container">
-                <div class="item_desc">[类别]明细描述</div>
-                <div class="item_spend">90.01</div>
-             </div>
-             <div class="item_container">
-                <div class="item_desc">[类别]明细描述</div>
-                <div class="item_spend">90.01</div>
-             </div>
-        </div>
-    </div>
-
-    <div class="order_container">
-    	<div class="order_content">
-        	<div class="order_desc">条目描述</div>
-            <div class="order_spend">90.01</div>
-            <div class="order_fund">现金</div>
-            <div class="order_time">2014-4-08-11</div>
-        </div>
-        <div class="items_container">
-        	<div class="item_container">
-                <div class="item_desc">[类别]明细描述</div>
-                <div class="item_spend">90.01</div>
-             </div>
-             <div class="item_container">
-                <div class="item_desc">[类别]明细描述</div>
-                <div class="item_spend">90.01</div>
-             </div>
-        </div>
-    </div>
-</div> -->
 
 <div class="orders_container">
     <div class="order_container order_form">
@@ -194,12 +156,46 @@ $(function(){
                 <div class="item_desc small"><input placeholder='物品具体名称'/></div>
                 <div class="item_spend"><input placeholder='金额'/></div>
                 <div class="item_type"><div class="type_content"></div></div>
+                <div class="right">
+                    <button class='btn item_del'>删除</button>
+                </div>
              </div>
         </div>
     </div>
 
     <?php
-    $result = getDB()->GetAll("select aa.*,bb.description as order_desc,bb.spend as order_spend,cc.type_name,dd.fund_name from items aa left join orders bb on aa.order_id = bb.id left join type cc on aa.type_id = cc.id left join fund dd on bb.fund_id = dd.id order by order_id");
+    if(isset($_GET['t'])){
+        $last_time = $_GET['t'];
+    }else{
+        $row = getDB()->GetRow("select DATE_FORMAT(time,'%Y-%m-%d') as ftime from orders order by time desc");
+        if($row!==false){
+            $last_time = $row['ftime'];
+            error_log($last_time);
+        }else{
+            $last_time=date('Y-m-d');
+        }
+    }
+    //$last_time=date('Y-m').'-01';
+    $row = getDB()->GetRow("select DATE_FORMAT(time,'%Y-%m-%d') as ftime from orders where time < ? order by time desc",$last_time);
+    error_log(json_encode($row));
+    if($row!==false){
+        $prev_time = $row['ftime'];
+    }
+    $row = getDB()->GetRow("select DATE_FORMAT(time,'%Y-%m-%d') as ftime from orders where time > ? order by time asc",$last_time);
+    if($row!==false){
+        $next_time = $row['ftime'];
+    }
+
+    if(isset($prev_time)){
+        echo '<a class="page" href="?t='.$prev_time.'">'.$prev_time.'</a>';
+    }
+    if(isset($next_time)){
+        echo '<a class="page" href="?t='.$next_time.'">'.$next_time.'</a>';
+    }
+
+    $result = getDB()->GetAll("select aa.*,DATE_FORMAT(aa.time,'%Y-%m-%d') as time_format,bb.description as order_desc,bb.spend as order_spend,cc.type_name,dd.fund_name from items aa left join orders bb on aa.order_id = bb.id left join type cc on aa.type_id = cc.id left join fund dd on bb.fund_id = dd.id"
+        ." where aa.time = ? "
+        ." order by aa.time desc,order_id desc",$last_time);
     $order_id = 0;
     foreach ($result as $row) {
     	$cur_order_id=$row['order_id'];
@@ -213,7 +209,7 @@ $(function(){
             echo '<div class="order_desc">'.$row['order_desc'].'</div>';
             echo '<div class="order_spend">'.$row['order_spend'].'</div>';
             echo '<div class="order_fund">'.$row['fund_name'].'</div>';
-            echo '<div class="order_time">'.$row['time'].'</div>';
+            echo '<div class="order_time">'.$row['time_format'].'</div>';
             echo '</div>';
 
     		echo '<div class="items_container">';

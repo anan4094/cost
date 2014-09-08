@@ -94,7 +94,6 @@ $.fn.typeSelect = function(options){
 
 $(function(){
 	$('.chosen').css({'width':200}).chosen();
-	$('.type_content').typeSelect();
 });
 
 

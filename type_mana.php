@@ -5,7 +5,7 @@
 <html>
 
 <link href="base.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="../Public/js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="lib/js/jquery-1.5.2.min.js"></script>
 <script type="text/javascript">
 $(function(){
 	$.ajax({
@@ -76,7 +76,7 @@ $(function(){
 		var name=$("<input class='input-tip' placeholder='请在这里输入类别名'/>");
 		var btn=$("<input type='button' value='保存' class='input-btn'/>");
 		var cancelBtn=$("<input type='button' value='取消' class='input-btn'/>");
-		
+
 		btn.click(function(){
 			var nameEdit=$($(this).parent('.type_item')[0]).find('.input-tip');
 			var nameText=nameEdit.val();
@@ -108,12 +108,12 @@ $(function(){
 					}
 				}
 			});
-			
+
 		});
 		cancelBtn.click(function(){
 			var item = $(this).parent();
 			item.detach();
-			
+
 		});
 		newItem.append(name);
 		newItem.append(btn);
@@ -121,7 +121,7 @@ $(function(){
 		container.append(newItem);
 		name.focus();
 	}
-	
+
 	function moditem(){
 		var item = $($(this).parent().parent().parent()[0]);
 		var data=item.data('item');
@@ -131,7 +131,7 @@ $(function(){
 		name.data('id',data.id);
 		var btn=$("<input type='button' value='保存' class='input-btn'/>");
 		var cancelBtn=$("<input type='button' value='取消' class='input-btn'/>");
-		
+
 		btn.click(function(){
 			var nameEdit=$($(this).parent('.type_item')[0]).find('.input-tip');
 			var nameText=nameEdit.val();
@@ -161,11 +161,11 @@ $(function(){
 						var itext=$("<div class='type_item_text'>"+e.data.name+"</div>");
 						itext.append(btns);
 						item.prepend(itext);
-						
+
 					}
 				}
 			});
-			
+
 		});
 		cancelBtn.click(function(){
 			var item = $(this).parent();
@@ -183,18 +183,18 @@ $(function(){
 			var itext=$("<div class='type_item_text'>"+data.name+"</div>");
 			itext.append(btns);
 			item.prepend(itext);
-			
+
 		});
 		item.prepend(cancelBtn);
 		item.prepend(btn);
 		item.prepend(name);
-		
+
 	}
-	
+
 	function delitem(){
 		var item = $($(this).parent().parent().parent()[0]);
 		var data = item.data('item');
-		
+
 		if(window.confirm('你确定要删除类别[ '+data.name+' ]吗？')){
 			$.ajax({
 				url:'type_action.php',

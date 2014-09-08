@@ -4,6 +4,9 @@
   src: url('./fonts/glyphicons-halflings-regular.eot');
   src: url('./fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('./fonts/glyphicons-halflings-regular.woff') format('woff'), url('./fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('./fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
+a{
+	text-decoration: none;
+}
 .type_controll div,.type_controll select{
 	display: inline-block;
 	vertical-align: top;
@@ -99,7 +102,7 @@
 .type_item_text:hover>.btns{
 	display:inline-block;
 }
-.icon {	
+.icon {
 	cursor:pointer;
 	width:20px;
 	height: 20px;
@@ -192,6 +195,14 @@
 
 .order_content .right{
 	float: right;
+}
+
+.item_container .right{
+	display: none;
+	float: right;
+}
+.item_container:hover .right{
+	display: inline-block;
 }
 
 .items_container{

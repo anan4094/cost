@@ -1,14 +1,12 @@
 <?php
-header("Content-type: application/json; charset=utf-8"); 
-require_once("mysql.class.php");
+header("Content-type: application/json; charset=utf-8");
+require_once("db/db.php");
 
-$db = new Mysql();
-$db->open();
-$result = $db->query("select * from type");
+$result = getDB()->GetAll("select * from type");
 
 $arr = array();
 $ret = array();
-while ($row = mysql_fetch_array($result)) {
+foreach ($result as $row) {
 	$pid = $row['pid'];
 	unset($tmp);
 	$tmp = array();
@@ -28,7 +26,6 @@ while ($row = mysql_fetch_array($result)) {
 	}
 	$arr[$tmp['id']]=&$tmp;
  }
-$db->close();
 echo json_encode(array('data'=>$ret));
 
 ?>
